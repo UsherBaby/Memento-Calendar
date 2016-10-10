@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.alexstyl.TimeWatch;
 import com.alexstyl.specialdates.date.Date;
 import com.alexstyl.specialdates.date.DateParseException;
 import com.alexstyl.specialdates.events.database.EventSQLiteOpenHelper;
@@ -16,6 +17,7 @@ import com.alexstyl.specialdates.events.database.EventsDBContract;
 import com.alexstyl.specialdates.events.database.EventsDBContract.AnnualEventsContract;
 import com.alexstyl.specialdates.events.database.PeopleEventsContract;
 import com.alexstyl.specialdates.events.database.PeopleEventsContract.PeopleEvents;
+import com.alexstyl.specialdates.events.namedays.calendar.resource.DebugLogger;
 import com.alexstyl.specialdates.upcoming.LoadingTimeDuration;
 import com.alexstyl.specialdates.util.DateParser;
 import com.novoda.notils.exception.DeveloperError;
@@ -45,10 +47,15 @@ public class PeopleEventsContentProvider extends ContentProvider {
 
     private SQLArgumentBuilder sqlArgumentBuilder = new SQLArgumentBuilder();
 
+    private TimeWatch timeWatch = new TimeWatch(new DebugLogger("contentprovider"));
+
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+
+        timeWatch.start("refresh");
         refreshEventsIfNeeded();
+        timeWatch.stop("refresh");
 
         SQLiteDatabase db = eventSQLHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
@@ -60,9 +67,12 @@ public class PeopleEventsContentProvider extends ContentProvider {
                 throwUnsupportedOperation("3+ select args");
             }
             Cursor[] cursors = new Cursor[2];
-
+            timeWatch.start("query annual");
             cursors[0] = queryAnnualEvents(projection, selection, selectionArgs, sortOrder, db, builder);
+            timeWatch.stop("query annual");
+            timeWatch.start("query dynamic");
             cursors[1] = queryDynamicEvents(projection, selection, selectionArgs, sortOrder, db, builder);
+            timeWatch.stop("query dynamic");
 
             SortCursor sortCursor = new SortCursor(cursors, AnnualEventsContract.DATE);
             sortCursor.setNotificationUri(getContext().getContentResolver(), uri);

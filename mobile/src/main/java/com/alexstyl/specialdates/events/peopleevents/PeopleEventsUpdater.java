@@ -24,6 +24,7 @@ class PeopleEventsUpdater {
         EventPreferences eventPreferences = new EventPreferences(context);
         ContactsObserver contactsObserver = new ContactsObserver(context.getContentResolver(), new Handler());
         NamedaySettingsMonitor namedaySettingsMonitor = new NamedaySettingsMonitor(NamedayPreferences.newInstance(context));
+        namedaySettingsMonitor.initialise();
         return new PeopleEventsUpdater(birthdayDatabaseRefresher, namedayDatabaseRefresher, eventPreferences, contactsObserver, namedaySettingsMonitor);
     }
 
@@ -53,13 +54,12 @@ class PeopleEventsUpdater {
 
     private void updateEventsIfSettingsChanged() {
         boolean wereContactsUpdated = contactsObserver.wereContactsUpdated();
-        boolean wereNamedaysSettingsUpdated = namedayMonitor.dataWasUpdated();
-
-        if (wereNamedaysSettingsUpdated) {
-            namedayDatabaseRefresher = NamedayDatabaseRefresher.newInstance(MementoApplication.getContext());
-        }
         if (wereContactsUpdated) {
             birthdayDatabaseRefresher.refreshBirthdays();
+        }
+        boolean wereNamedaysSettingsUpdated = namedayMonitor.dataWasUpdated();
+        if (wereNamedaysSettingsUpdated) {
+            namedayDatabaseRefresher = NamedayDatabaseRefresher.newInstance(MementoApplication.getContext());
         }
         if (wereContactsUpdated || wereNamedaysSettingsUpdated) {
             namedayDatabaseRefresher.refreshNamedaysIfEnabled();

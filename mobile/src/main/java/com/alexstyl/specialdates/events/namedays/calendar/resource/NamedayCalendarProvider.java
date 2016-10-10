@@ -2,6 +2,7 @@ package com.alexstyl.specialdates.events.namedays.calendar.resource;
 
 import android.content.res.Resources;
 
+import com.alexstyl.TimeWatch;
 import com.alexstyl.specialdates.ErrorTracker;
 import com.alexstyl.specialdates.events.namedays.NamedayBundle;
 import com.alexstyl.specialdates.events.namedays.NamedayLocale;
@@ -24,7 +25,7 @@ public class NamedayCalendarProvider {
         return new NamedayCalendarProvider(jsonResourceProvider, factory);
     }
 
-    // eventually we will use DI to provide this, so don't worry about the `public`
+    // eventually we will use DI to provide this, so don't worry about it being `public`
     public NamedayCalendarProvider(NamedayJSONResourceProvider jsonProvider, SpecialNamedaysHandlerFactory factory) {
         this.factory = factory;
         this.jsonProvider = jsonProvider;
@@ -34,6 +35,9 @@ public class NamedayCalendarProvider {
         if (hasRequestedSameCalendar(locale, year)) {
             return cachedCalendar;
         }
+        String tag = "namedayCalendar";
+        TimeWatch timeWatch = new TimeWatch(new DebugLogger(tag));
+        timeWatch.start(tag);
         NamedayJSON namedayJSON = getNamedayJSONFor(locale);
         SpecialNamedays specialCaseHandler = getSpecialnamedaysHandler(locale, namedayJSON);
         NamedayBundle namedaysBundle = getNamedayBundle(locale, namedayJSON);
@@ -41,6 +45,7 @@ public class NamedayCalendarProvider {
 
         cacheCalendar(namedayCalendar);
 
+        timeWatch.stop(tag);
         return namedayCalendar;
     }
 

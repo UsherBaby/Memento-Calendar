@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.alexstyl.TimeWatch;
 import com.alexstyl.specialdates.ErrorTracker;
 import com.alexstyl.specialdates.contact.Contact;
 import com.alexstyl.specialdates.contact.ContactNotFoundException;
@@ -13,13 +14,13 @@ import com.alexstyl.specialdates.contact.ContactProvider;
 import com.alexstyl.specialdates.date.ContactEvent;
 import com.alexstyl.specialdates.date.Date;
 import com.alexstyl.specialdates.datedetails.PeopleEventsQuery;
-import com.alexstyl.specialdates.events.peopleevents.ContactEvents;
-import com.alexstyl.specialdates.events.peopleevents.EventType;
 import com.alexstyl.specialdates.events.database.PeopleEventsContract;
 import com.alexstyl.specialdates.events.namedays.NamedayPreferences;
+import com.alexstyl.specialdates.events.namedays.calendar.resource.DebugLogger;
+import com.alexstyl.specialdates.events.peopleevents.ContactEvents;
+import com.alexstyl.specialdates.events.peopleevents.EventType;
 import com.alexstyl.specialdates.upcoming.LoadingTimeDuration;
 import com.novoda.notils.exception.DeveloperError;
-import com.novoda.notils.logger.simple.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,19 +140,23 @@ public class PeopleEventsProvider {
         return namedayPreferences.isEnabled();
     }
 
+    private TimeWatch timeWatch = new TimeWatch(new DebugLogger("provider"));
+
     public List<ContactEvent> getCelebrationDateFor(LoadingTimeDuration timeDuration) {
         List<ContactEvent> contactEvents = new ArrayList<>();
         Cursor cursor = queryPeopleEvents(timeDuration.getFrom(), timeDuration.getTo());
         throwIfInvalid(cursor);
 
+        timeWatch.start("contact");
         while (cursor.moveToNext()) {
             try {
                 ContactEvent contactEvent = getContactEventFrom(cursor);
                 contactEvents.add(contactEvent);
             } catch (ContactNotFoundException e) {
-                Log.w(e);
+                ErrorTracker.track(e);
             }
         }
+        timeWatch.stop("contact");
 
         cursor.close();
         return contactEvents;
@@ -164,6 +169,7 @@ public class PeopleEventsProvider {
                 endingDate.toShortDate()
         };
 
+        timeWatch.start("query contacts");
         Cursor cursor = resolver.query(
                 PeopleEventsContract.PeopleEvents.CONTENT_URI,
                 PROJECTION,
@@ -171,6 +177,7 @@ public class PeopleEventsProvider {
                 selectArgs,
                 PeopleEventsContract.PeopleEvents.DATE + " ASC"
         );
+        timeWatch.stop("query contacts");
         if (isInvalid(cursor)) {
             ErrorTracker.track(new IllegalStateException("People Events returned invalid cursor"));
         }

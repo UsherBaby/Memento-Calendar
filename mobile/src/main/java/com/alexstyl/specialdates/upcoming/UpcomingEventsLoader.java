@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
 
+import com.alexstyl.TimeWatch;
 import com.alexstyl.specialdates.date.CelebrationDate;
 import com.alexstyl.specialdates.date.ContactEvent;
 import com.alexstyl.specialdates.date.DateComparator;
@@ -17,6 +18,7 @@ import com.alexstyl.specialdates.events.namedays.NamedayPreferences;
 import com.alexstyl.specialdates.events.namedays.NamesInADate;
 import com.alexstyl.specialdates.events.namedays.calendar.EasterCalculator;
 import com.alexstyl.specialdates.events.namedays.calendar.NamedayCalendar;
+import com.alexstyl.specialdates.events.namedays.calendar.resource.DebugLogger;
 import com.alexstyl.specialdates.events.namedays.calendar.resource.NamedayCalendarProvider;
 import com.alexstyl.specialdates.service.PeopleEventsProvider;
 import com.alexstyl.specialdates.ui.loader.SimpleAsyncTaskLoader;
@@ -55,23 +57,28 @@ public class UpcomingEventsLoader extends SimpleAsyncTaskLoader<List<Celebration
 
     @Override
     public List<CelebrationDate> loadInBackground() {
-
+        TimeWatch timeWatch = new TimeWatch(new DebugLogger("upcoming"));
+        timeWatch.start("contacts");
         List<ContactEvent> contactEvents = peopleEventsProvider.getCelebrationDateFor(timeDuration);
-
-        BankHolidaysPreferences bankHolidaysPreferences = BankHolidaysPreferences.newInstance(getContext());
+        timeWatch.stop("contacts");
         UpcomingDatesBuilder upcomingDatesBuilder = new UpcomingDatesBuilder()
                 .withContactEvents(contactEvents);
 
+        BankHolidaysPreferences bankHolidaysPreferences = BankHolidaysPreferences.newInstance(getContext());
         if (bankHolidaysPreferences.isEnabled()) {
+            timeWatch.start("bankholidays");
             BankholidayCalendar.get();
             Date easter = easterCalculator.calculateEasterForYear(currentYear);
             List<BankHoliday> bankHolidays = new GreekBankHolidays(easter).getBankHolidaysForYear();
             upcomingDatesBuilder.withBankHolidays(bankHolidays);
+            timeWatch.stop("bankholidays");
         }
 
         if (includeNamedays()) {
+            timeWatch.start("namedays");
             List<NamesInADate> namedays = getNamedaysFor(timeDuration);
             upcomingDatesBuilder.withNamedays(namedays);
+            timeWatch.stop("namedays");
         }
 
         List<CelebrationDate> allDates = upcomingDatesBuilder.build();
