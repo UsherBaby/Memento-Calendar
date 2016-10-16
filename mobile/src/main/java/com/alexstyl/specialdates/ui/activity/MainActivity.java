@@ -61,7 +61,7 @@ public class MainActivity extends ThemedActivity {
         ViewGroup activityContent = Views.findById(this, R.id.main_content);
         searchTransitioner = new SearchTransitioner(this, navigator, activityContent, toolbar, new ViewFader());
 
-        notifier = Notifier.newInstance(this);
+        notifier = new Notifier(this,getResources());
 
         FloatingActionButton addBirthdayFAB = Views.findById(this, R.id.main_birthday_add_fab);
         addBirthdayFAB.setOnClickListener(startAddBirthdayOnClick);

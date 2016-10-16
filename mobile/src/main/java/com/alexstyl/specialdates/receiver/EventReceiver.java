@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.alexstyl.specialdates.BuildConfig;
 import com.alexstyl.specialdates.ErrorTracker;
-import com.alexstyl.specialdates.service.DailyReminderIntentService;
+import com.alexstyl.specialdates.service.DailyReminderService;
 import com.alexstyl.specialdates.settings.MainPreferenceActivity;
 import com.alexstyl.specialdates.wear.WearSyncService;
 import com.alexstyl.specialdates.widgetprovider.TodayWidgetProvider;
@@ -44,7 +44,7 @@ public class EventReceiver extends BroadcastReceiver {
 
     private void onBootCompleted(Context context) {
         if (MainPreferenceActivity.isDailyReminderSet(context)) {
-            DailyReminderIntentService.rescheduleAlarm(context);
+            DailyReminderService.setup(context);
         }
         TodayWidgetProvider.updateWidgets(context);
         WearSyncService.startService(context);
@@ -52,7 +52,7 @@ public class EventReceiver extends BroadcastReceiver {
 
     private void onStartDailyReminder(Context context) {
         if (MainPreferenceActivity.isDailyReminderSet(context)) {
-            DailyReminderIntentService.startService(context);
+            DailyReminderService.startService(context);
             WearSyncService.startService(context);
         }
     }

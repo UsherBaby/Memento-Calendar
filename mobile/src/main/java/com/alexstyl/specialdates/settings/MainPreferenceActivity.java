@@ -11,7 +11,7 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 import com.alexstyl.specialdates.R;
-import com.alexstyl.specialdates.service.DailyReminderIntentService;
+import com.alexstyl.specialdates.service.DailyReminderService;
 import com.alexstyl.specialdates.theming.Themer;
 import com.alexstyl.specialdates.ui.activity.MainActivity;
 import com.alexstyl.specialdates.ui.base.MementoPreferenceActivity;
@@ -53,7 +53,7 @@ public class MainPreferenceActivity extends MementoPreferenceActivity {
 
     /**
      * Returns the user selected hour of the day to run the
-     * {@link DailyReminderIntentService}
+     * {@link DailyReminderService}
      *
      * @param context The context to use
      */

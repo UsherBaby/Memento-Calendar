@@ -17,7 +17,7 @@ import com.alexstyl.specialdates.contact.actions.IntentAction;
 import com.alexstyl.specialdates.dailyreminder.DailyReminderDebugPreferences;
 import com.alexstyl.specialdates.date.Date;
 import com.alexstyl.specialdates.events.peopleevents.DebugPeopleEventsUpdater;
-import com.alexstyl.specialdates.service.DailyReminderIntentService;
+import com.alexstyl.specialdates.service.DailyReminderService;
 import com.alexstyl.specialdates.ui.base.MementoPreferenceFragment;
 import com.alexstyl.specialdates.util.Utils;
 import com.alexstyl.specialdates.wear.WearSyncService;
@@ -75,7 +75,7 @@ public class DebugFragment extends MementoPreferenceFragment {
         findPreference(R.string.key_debug_daily_reminder).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                DailyReminderIntentService.startService(getActivity());
+                DailyReminderService.startService(getActivity());
                 Toast.makeText(getActivity(), "Daily Reminder Triggered", Toast.LENGTH_SHORT).show();
                 return true;
             }

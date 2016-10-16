@@ -25,7 +25,7 @@ import com.alexstyl.specialdates.analytics.Action;
 import com.alexstyl.specialdates.analytics.ActionWithParameters;
 import com.alexstyl.specialdates.analytics.Analytics;
 import com.alexstyl.specialdates.analytics.AnalyticsProvider;
-import com.alexstyl.specialdates.service.DailyReminderIntentService;
+import com.alexstyl.specialdates.service.DailyReminderService;
 import com.alexstyl.specialdates.ui.base.MementoPreferenceFragment;
 import com.alexstyl.specialdates.ui.widget.TimePreference;
 import com.alexstyl.specialdates.util.Utils;
@@ -59,9 +59,9 @@ public class DailyReminderFragment extends MementoPreferenceFragment {
                 ActionWithParameters event = new ActionWithParameters(Action.DAILY_REMINDER, "enabled", isChecked);
                 analytics.trackAction(event);
                 if (isChecked) {
-                    DailyReminderIntentService.rescheduleAlarm(context);
+                    DailyReminderService.setup(context);
                 } else {
-                    DailyReminderIntentService.cancelAlarm(context);
+                    DailyReminderService.cancel(context);
                 }
                 return true;
             }
@@ -103,7 +103,7 @@ public class DailyReminderFragment extends MementoPreferenceFragment {
                 int[] time = (int[]) newValue;
                 updateTimeSet(time);
                 MainPreferenceActivity.setDailyReminderTime(getActivity(), time);
-                DailyReminderIntentService.resetAlarm(getActivity());
+                DailyReminderService.setup(getActivity());
                 return true;
             }
         });

@@ -45,17 +45,9 @@ public class Notifier {
 
     private final Context context;
     private final Resources resources;
-    private final ImageLoader imageLoader;
 
-    public static Notifier newInstance(Context context) {
-        Resources resources = context.getResources();
-        ImageLoader imageLoader = ImageLoader.createSquareThumbnailLoader(resources);
-        return new Notifier(context, resources, imageLoader);
-    }
-
-    public Notifier(Context context, Resources resources, ImageLoader imageLoader) {
+    public Notifier(Context context, Resources resources) {
         this.resources = resources;
-        this.imageLoader = imageLoader;
         this.context = context.getApplicationContext();
     }
 
@@ -64,7 +56,7 @@ public class Notifier {
      *
      * @param events The celebration date to display
      */
-    public void forDailyReminder(ContactEvents events) {
+    public void forDailyReminder(ContactEvents events, ImageLoader imageLoader) {
         Bitmap largeIcon = null;
         Date date = events.getDate();
         int contactCount = events.size();
@@ -72,7 +64,7 @@ public class Notifier {
         if (shouldDisplayContactImage(contactCount)) {
             int size = resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
             Contact displayingContact = events.getContacts().iterator().next();
-            largeIcon = loadImageAsync(displayingContact, size, size);
+            largeIcon = loadImageAsync(displayingContact, size, size, imageLoader);
             if (Utils.hasLollipop() && largeIcon != null) {
                 // in Lollipop the notifications is the default to use Rounded Images
                 largeIcon = getCircleBitmap(largeIcon);
@@ -186,7 +178,7 @@ public class Notifier {
         return output;
     }
 
-    private Bitmap loadImageAsync(Contact displayingContact, int width, int height) {
+    private Bitmap loadImageAsync(Contact displayingContact, int width, int height, ImageLoader imageLoader) {
         return imageLoader.loadBitmap(displayingContact.getImagePath(), width, height);
     }
 

@@ -6,7 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.alexstyl.specialdates.images.ImageLoader;
-import com.alexstyl.specialdates.service.DailyReminderIntentService;
+import com.alexstyl.specialdates.service.DailyReminderService;
 import com.novoda.notils.logger.simple.Log;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -42,7 +42,7 @@ public class MementoApplication extends Application {
         context = this;
         initialiseDependencies();
         ErrorTracker.startTracking(this);
-        DailyReminderIntentService.setup(this);
+        DailyReminderService.setup(this);
     }
 
     protected void initialiseDependencies() {
