@@ -1,6 +1,7 @@
 package com.alexstyl.specialdates.dailyreminder;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -139,10 +140,18 @@ public class DailyReminderService extends IntentService {
     }
 
     public static void setup(Context context) {
+        DailyReminderPreferences dailyReminderPreferences = DailyReminderPreferences.newInstance(context);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
+        DailyReminderSetter dailyReminderSetter = new DailyReminderSetter(alarmManager, dailyReminderPreferences);
+        dailyReminderSetter.refreshReminder();
     }
 
     public static void cancel(Context context) {
+        DailyReminderPreferences dailyReminderPreferences = DailyReminderPreferences.newInstance(context);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
+        DailyReminderSetter dailyReminderSetter = new DailyReminderSetter(alarmManager, dailyReminderPreferences);
+        dailyReminderSetter.cancelReminder();
     }
 }

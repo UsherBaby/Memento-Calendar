@@ -32,6 +32,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 public class DailyReminderFragment extends MementoPreferenceFragment {
 
     private static final int EXTERNAL_STORAGE_REQUEST_CODE = 15;
+
     private DailyReminderPreferences preferences;
     private CheckBoxPreference enablePreference;
     private RingtonePreference ringtonePreference;
