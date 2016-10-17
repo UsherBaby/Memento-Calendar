@@ -11,7 +11,7 @@
 
     <intent
       android:action="android.intent.action.VIEW"
-      android:targetClass="com.alexstyl.specialdates.settings.DailyReminderActivity"
+      android:targetClass="com.alexstyl.specialdates.dailyreminder.DailyReminderActivity"
       android:targetPackage="com.alexstyl.specialdates" />
 
   </Preference>
