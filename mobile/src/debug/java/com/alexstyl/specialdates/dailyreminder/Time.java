@@ -65,4 +65,10 @@ public final class Time {
     public String toString() {
         return getHourOfDay() + ":" + getMinutes();
     }
+
+    public Time addHour(int i) {
+        Calendar newCalendar = Calendar.getInstance();
+        newCalendar.add(Calendar.HOUR, i);
+        return new Time(newCalendar);
+    }
 }

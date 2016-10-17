@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.alexstyl.specialdates.BuildConfig;
+import com.alexstyl.specialdates.Optional;
 import com.alexstyl.specialdates.date.Date;
 import com.alexstyl.specialdates.events.bankholidays.BankHoliday;
 import com.alexstyl.specialdates.events.bankholidays.BankHolidaysPreferences;
@@ -117,22 +118,22 @@ public class DailyReminderService extends IntentService {
     }
 
     private void notifyForBankholidaysFor(Date date) {
-        BankHoliday bankHoliday = findBankholidayFor(date);
-        if (bankHoliday != null) {
-            notifier.forBankholiday(date, bankHoliday);
+        Optional<BankHoliday> bankHoliday = findBankholidayFor(date);
+        if (bankHoliday.isPresent()) {
+            notifier.forBankholiday(date, bankHoliday.get());
         }
     }
 
-    private BankHoliday findBankholidayFor(Date date) {
+    private Optional<BankHoliday> findBankholidayFor(Date date) {
         EasterCalculator calculator = new EasterCalculator();
         Date easter = calculator.calculateEasterForYear(date.getYear());
         List<BankHoliday> bankHolidays = new GreekBankHolidays(easter).getBankHolidaysForYear();
         for (BankHoliday bankHoliday : bankHolidays) {
             if (bankHoliday.getDate().equals(date)) {
-                return bankHoliday;
+                return new Optional<>(bankHoliday);
             }
         }
-        return null;
+        return Optional.absent();
     }
 
     private boolean containsNames(NamesInADate names) {
@@ -143,7 +144,7 @@ public class DailyReminderService extends IntentService {
         DailyReminderPreferences dailyReminderPreferences = DailyReminderPreferences.newInstance(context);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
-        DailyReminderSetter dailyReminderSetter = new DailyReminderSetter(alarmManager, dailyReminderPreferences);
+        DailyReminderSetter dailyReminderSetter = new DailyReminderSetter(context, alarmManager, dailyReminderPreferences);
         dailyReminderSetter.refreshReminder();
     }
 
@@ -151,7 +152,7 @@ public class DailyReminderService extends IntentService {
         DailyReminderPreferences dailyReminderPreferences = DailyReminderPreferences.newInstance(context);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
-        DailyReminderSetter dailyReminderSetter = new DailyReminderSetter(alarmManager, dailyReminderPreferences);
+        DailyReminderSetter dailyReminderSetter = new DailyReminderSetter(context, alarmManager, dailyReminderPreferences);
         dailyReminderSetter.cancelReminder();
     }
 }
