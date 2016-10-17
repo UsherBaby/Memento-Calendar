@@ -1,4 +1,4 @@
-package com.alexstyl.specialdates.settings;
+package com.alexstyl.specialdates.dailyreminder;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -23,9 +23,7 @@ import com.alexstyl.specialdates.analytics.Action;
 import com.alexstyl.specialdates.analytics.ActionWithParameters;
 import com.alexstyl.specialdates.analytics.Analytics;
 import com.alexstyl.specialdates.analytics.AnalyticsProvider;
-import com.alexstyl.specialdates.dailyreminder.DailyReminderPreferences;
-import com.alexstyl.specialdates.dailyreminder.DailyReminderService;
-import com.alexstyl.specialdates.dailyreminder.Time;
+import com.alexstyl.specialdates.settings.MainPreferenceActivity;
 import com.alexstyl.specialdates.ui.base.MementoPreferenceFragment;
 import com.alexstyl.specialdates.ui.widget.TimePreference;
 

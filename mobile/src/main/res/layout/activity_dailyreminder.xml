@@ -14,7 +14,7 @@
 
   <fragment
     android:id="@+id/main_pref_frag"
-    android:name="com.alexstyl.specialdates.settings.DailyReminderFragment"
+    android:name="com.alexstyl.specialdates.dailyreminder.DailyReminderFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
