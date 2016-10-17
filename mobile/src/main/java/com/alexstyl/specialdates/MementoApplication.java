@@ -6,7 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.alexstyl.specialdates.images.ImageLoader;
-import com.alexstyl.specialdates.service.DailyReminderService;
+import com.alexstyl.specialdates.dailyreminder.DailyReminderService;
 import com.novoda.notils.logger.simple.Log;
 
 import net.danlew.android.joda.JodaTimeAndroid;

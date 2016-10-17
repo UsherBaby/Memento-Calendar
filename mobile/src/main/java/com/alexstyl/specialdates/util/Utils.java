@@ -126,11 +126,6 @@ public class Utils {
         return android.os.Build.VERSION.RELEASE;
     }
 
-    public static boolean hasVibrator(Context context) {
-        Vibrator vibr = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        return vibr.hasVibrator();
-    }
-
     /**
      * Starts a {@link IntentAction}. A Toast is displayed if the action throws an ActivityNotFoundException
      *

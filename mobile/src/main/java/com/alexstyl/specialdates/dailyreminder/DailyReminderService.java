@@ -1,4 +1,4 @@
-package com.alexstyl.specialdates.service;
+package com.alexstyl.specialdates.dailyreminder;
 
 import android.Manifest;
 import android.app.IntentService;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.alexstyl.specialdates.BuildConfig;
-import com.alexstyl.specialdates.dailyreminder.DailyReminderDebugPreferences;
 import com.alexstyl.specialdates.date.Date;
 import com.alexstyl.specialdates.events.bankholidays.BankHoliday;
 import com.alexstyl.specialdates.events.bankholidays.BankHolidaysPreferences;
@@ -20,6 +19,7 @@ import com.alexstyl.specialdates.events.namedays.calendar.resource.NamedayCalend
 import com.alexstyl.specialdates.events.peopleevents.ContactEvents;
 import com.alexstyl.specialdates.images.ImageLoader;
 import com.alexstyl.specialdates.permissions.PermissionChecker;
+import com.alexstyl.specialdates.service.PeopleEventsProvider;
 import com.alexstyl.specialdates.util.Notifier;
 import com.novoda.notils.logger.simple.Log;
 
@@ -36,6 +36,7 @@ public class DailyReminderService extends IntentService {
     private BankHolidaysPreferences bankHolidaysPreferences;
     private PermissionChecker permissionChecker;
     private Notifier notifier;
+    private DailyReminderPreferences preferences;
 
     public DailyReminderService() {
         super(DailyReminderService.class.getSimpleName());
@@ -46,14 +47,6 @@ public class DailyReminderService extends IntentService {
         context.startService(service);
     }
 
-    public static void setup(Context context) {
-        // setup  alarm
-    }
-
-    public static void cancel(Context context) {
-        // cancel alarm
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,6 +55,7 @@ public class DailyReminderService extends IntentService {
         namedayCalendarProvider = NamedayCalendarProvider.newInstance(this.getResources());
         bankHolidaysPreferences = BankHolidaysPreferences.newInstance(this);
         permissionChecker = new PermissionChecker(this);
+        preferences = DailyReminderPreferences.newInstance(this);
     }
 
     @Override
@@ -73,7 +67,7 @@ public class DailyReminderService extends IntentService {
             ContactEvents celebrationDate = provider.getCelebrationDateFor(today);
             if (containsAnyContactEvents(celebrationDate)) {
                 ImageLoader imageLoader = ImageLoader.createSquareThumbnailLoader(getResources());
-                notifier.forDailyReminder(celebrationDate, imageLoader);
+                notifier.forDailyReminder(celebrationDate, imageLoader, preferences);
             }
         }
         if (namedaysAreEnabledForAllCases()) {
@@ -142,5 +136,13 @@ public class DailyReminderService extends IntentService {
 
     private boolean containsNames(NamesInADate names) {
         return names.nameCount() > 0;
+    }
+
+    public static void setup(Context context) {
+
+    }
+
+    public static void cancel(Context context) {
+
     }
 }

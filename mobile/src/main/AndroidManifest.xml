@@ -136,7 +136,7 @@
     <activity android:name=".permissions.ContactPermissionActivity" />
     <!-- Services -->
     <service
-      android:name="com.alexstyl.specialdates.service.DailyReminderService"
+      android:name="com.alexstyl.specialdates.dailyreminder.DailyReminderService"
       android:exported="false"
       android:label="@string/service_dailyreminder" />
 
